@@ -1,0 +1,57 @@
+{
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {
+                "collapsed": true
+            },
+            "source": "# Business problem - Introduction"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "## 1.\tA description of the problem and a discussion of the background"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "Traffic accidents represent one of the leading causes of death worldwide and of economic expenditure. Despite the many measures and campaigns that are deployed each year to raise awareness of the seriousness of the problem, it continues to occur quite frequently. The impact that traffic accidents have on society and the economy is high, with human losses being compounded by heavy expenditures on health care, awareness campaigns, mobilization of specialized personnel, etc.\nThe OMS sets the economic impact of road accidents in a developed country around 2 to 3% of GDP, a significant figure for any country. Working together to reduce this loss has become a major issue of general concern."
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "# Data to be used"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "## 2.\tA description of the data and how it will be used to solve the problem"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "For an accurate prediction of the magnitude of damage caused by accidents, they require a large number of reports on traffic accidents with accurate data to train prediction models. \nThe data set provided for this work allows the analysis of a record of 200,000 accidents in the state of Seattle, from 2004 to the date it is issued, in which 37 attributes or variables are recorded and the codification of the type of accident is allowed, grouped according to 84 codes. \nThe information can be extracted from it:\n- speed information \n- information on road conditions and visibility\n- type of collision\n- affected persons, etc \n\nThe data will be used to group according to the most common or accident-prone attributes of a traffic accident in order to target prevention at these high-incidence points."
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3.6",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "codemirror_mode": {
+                "name": "ipython",
+                "version": 3
+            },
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.6.9"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 1
+}
