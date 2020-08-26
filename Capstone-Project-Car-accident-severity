@@ -15,7 +15,7 @@
         {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "Traffic accidents represent one of the leading causes of death worldwide and of economic expenditure. Despite the many measures and campaigns that are deployed each year to raise awareness of the seriousness of the problem, it continues to occur quite frequently. The impact that traffic accidents have on society and the economy is high, with human losses being compounded by heavy expenditures on health care, awareness campaigns, mobilization of specialized personnel, etc.\nThe OMS sets the economic impact of road accidents in a developed country around 2 to 3% of GDP, a significant figure for any country. Working together to reduce this loss has become a major issue of general concern."
+            "source": "Traffic accidents represent one of the leading causes of death worldwide and of economic expenditure. Despite the many measures and campaigns that are deployed each year to raise awareness of the seriousness of the problem, it continues to occur quite frequently. The impact that traffic accidents have on society and the economy is high, with human losses being compounded by heavy expenditures on health care, awareness campaigns, mobilization of specialized personnel, etc.\nThe OMS sets the economic impact of road accidents in a developed country around 2 to 3% of GDP, a significant figure for any country. Working together to reduce this loss has become a major issue of general concern. \n\nDefining the problem:\n\n- What are the factors that have the greatest impact on car accidents?\n\n- Is there a pattern to them?\n\n- Correlation?"
         },
         {
             "cell_type": "markdown",
@@ -31,6 +31,195 @@
             "cell_type": "markdown",
             "metadata": {},
             "source": "For an accurate prediction of the magnitude of damage caused by accidents, they require a large number of reports on traffic accidents with accurate data to train prediction models. \nThe data set provided for this work allows the analysis of a record of 200,000 accidents in the state of Seattle, from 2004 to the date it is issued, in which 37 attributes or variables are recorded and the codification of the type of accident is allowed, grouped according to 84 codes. \nThe information can be extracted from it:\n- speed information \n- information on road conditions and visibility\n- type of collision\n- affected persons, etc \n\nThe data will be used to group according to the most common or accident-prone attributes of a traffic accident in order to target prevention at these high-incidence points."
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "# Introduction"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "Note that this work represents the final project of the IBM certification course, for which we have provided the data with which we will develop the project. \n\nThese data have been collected and shared by the Seattle Police Department (Traffic Records) and are provided by Coursera for downloading through a link. \n\nIt takes into account a period of time from 2004 to the present, recording information related to the severity of the traffic accident, location, type of collision, weather and road conditions, visibility, number of people involved, etc.\n\nThe objective is to define the problem, find relationships between the data provided, patterns, etc. that may be of interest to any organization interested in reducing the number of road accidents. \n\nIn order to provide greater clarity, I will try to analyze the data, see if there are relationships or patterns, especially in high impact accidents, so that preventive measures can focus on these points as a first prevention strategy."
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "## Data Source"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "- Data Source: These data have been collected and shared by the Seattle Police Department (Traffic Records) and are provided by Coursera for downloading through a link. \n\n- Data Location: Coursera_Capstone/Data assets\n- Data set name: Data-Collisions (1)_shaped.csv"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "## Methodology"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "- Objective: The objective of this project is to predict the severity of a traffic accident based on the other characteristics contained in the report.\n\n- Packages and libraries: We will use libraries and packages for both data manipulation and data visualization. PANDA, NUMPY, SCIPY, Matplotlib, Seaborn\n\n\nA data analysis will be performed in order to determine what type of methodology and learning of the machine will be the most appropriate, in addition to obtaining a first contact with the data that we find more relevant to use in this project. \n"
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "### Code"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 25,
+            "metadata": {},
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": "imported\n"
+                }
+            ],
+            "source": "#importing libraries and packages\n\nimport pandas as pd\nimport numpy as np\nfrom sklearn import linear_model\nfrom sklearn import model_selection\nfrom sklearn.metrics import classification_report\nfrom sklearn.metrics import confusion_matrix\nfrom sklearn.metrics import accuracy_score\nimport matplotlib.pyplot as plt\nimport seaborn as sb\n%matplotlib inline\n\nprint(\"imported\")"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 26,
+            "metadata": {},
+            "outputs": [
+                {
+                    "name": "stderr",
+                    "output_type": "stream",
+                    "text": "/opt/conda/envs/Python36/lib/python3.6/site-packages/IPython/core/interactiveshell.py:3020: DtypeWarning: Columns (33) have mixed types. Specify dtype option on import or set low_memory=False.\n  interactivity=interactivity, compiler=compiler, result=result)\n"
+                },
+                {
+                    "data": {
+                        "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>SEVERITYCODE</th>\n      <th>X</th>\n      <th>Y</th>\n      <th>OBJECTID</th>\n      <th>INCKEY</th>\n      <th>COLDETKEY</th>\n      <th>REPORTNO</th>\n      <th>STATUS</th>\n      <th>ADDRTYPE</th>\n      <th>INTKEY</th>\n      <th>...</th>\n      <th>ROADCOND</th>\n      <th>LIGHTCOND</th>\n      <th>PEDROWNOTGRNT</th>\n      <th>SDOTCOLNUM</th>\n      <th>SPEEDING</th>\n      <th>ST_COLCODE</th>\n      <th>ST_COLDESC</th>\n      <th>SEGLANEKEY</th>\n      <th>CROSSWALKKEY</th>\n      <th>HITPARKEDCAR</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>2</td>\n      <td>-122.323148</td>\n      <td>47.703140</td>\n      <td>1</td>\n      <td>1307</td>\n      <td>1307</td>\n      <td>3502005</td>\n      <td>Matched</td>\n      <td>Intersection</td>\n      <td>37475.0</td>\n      <td>...</td>\n      <td>Wet</td>\n      <td>Daylight</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>10</td>\n      <td>Entering at angle</td>\n      <td>0</td>\n      <td>0</td>\n      <td>N</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>1</td>\n      <td>-122.347294</td>\n      <td>47.647172</td>\n      <td>2</td>\n      <td>52200</td>\n      <td>52200</td>\n      <td>2607959</td>\n      <td>Matched</td>\n      <td>Block</td>\n      <td>NaN</td>\n      <td>...</td>\n      <td>Wet</td>\n      <td>Dark - Street Lights On</td>\n      <td>NaN</td>\n      <td>6354039.0</td>\n      <td>NaN</td>\n      <td>11</td>\n      <td>From same direction - both going straight - bo...</td>\n      <td>0</td>\n      <td>0</td>\n      <td>N</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>1</td>\n      <td>-122.334540</td>\n      <td>47.607871</td>\n      <td>3</td>\n      <td>26700</td>\n      <td>26700</td>\n      <td>1482393</td>\n      <td>Matched</td>\n      <td>Block</td>\n      <td>NaN</td>\n      <td>...</td>\n      <td>Dry</td>\n      <td>Daylight</td>\n      <td>NaN</td>\n      <td>4323031.0</td>\n      <td>NaN</td>\n      <td>32</td>\n      <td>One parked--one moving</td>\n      <td>0</td>\n      <td>0</td>\n      <td>N</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>1</td>\n      <td>-122.334803</td>\n      <td>47.604803</td>\n      <td>4</td>\n      <td>1144</td>\n      <td>1144</td>\n      <td>3503937</td>\n      <td>Matched</td>\n      <td>Block</td>\n      <td>NaN</td>\n      <td>...</td>\n      <td>Dry</td>\n      <td>Daylight</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>NaN</td>\n      <td>23</td>\n      <td>From same direction - all others</td>\n      <td>0</td>\n      <td>0</td>\n      <td>N</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>2</td>\n      <td>-122.306426</td>\n      <td>47.545739</td>\n      <td>5</td>\n      <td>17700</td>\n      <td>17700</td>\n      <td>1807429</td>\n      <td>Matched</td>\n      <td>Intersection</td>\n      <td>34387.0</td>\n      <td>...</td>\n      <td>Wet</td>\n      <td>Daylight</td>\n      <td>NaN</td>\n      <td>4028032.0</td>\n      <td>NaN</td>\n      <td>10</td>\n      <td>Entering at angle</td>\n      <td>0</td>\n      <td>0</td>\n      <td>N</td>\n    </tr>\n  </tbody>\n</table>\n<p>5 rows \u00d7 38 columns</p>\n</div>",
+                        "text/plain": "   SEVERITYCODE           X          Y  OBJECTID  INCKEY  COLDETKEY REPORTNO  \\\n0             2 -122.323148  47.703140         1    1307       1307  3502005   \n1             1 -122.347294  47.647172         2   52200      52200  2607959   \n2             1 -122.334540  47.607871         3   26700      26700  1482393   \n3             1 -122.334803  47.604803         4    1144       1144  3503937   \n4             2 -122.306426  47.545739         5   17700      17700  1807429   \n\n    STATUS      ADDRTYPE   INTKEY  ... ROADCOND                LIGHTCOND  \\\n0  Matched  Intersection  37475.0  ...      Wet                 Daylight   \n1  Matched         Block      NaN  ...      Wet  Dark - Street Lights On   \n2  Matched         Block      NaN  ...      Dry                 Daylight   \n3  Matched         Block      NaN  ...      Dry                 Daylight   \n4  Matched  Intersection  34387.0  ...      Wet                 Daylight   \n\n  PEDROWNOTGRNT  SDOTCOLNUM SPEEDING ST_COLCODE  \\\n0           NaN         NaN      NaN         10   \n1           NaN   6354039.0      NaN         11   \n2           NaN   4323031.0      NaN         32   \n3           NaN         NaN      NaN         23   \n4           NaN   4028032.0      NaN         10   \n\n                                          ST_COLDESC  SEGLANEKEY  \\\n0                                  Entering at angle           0   \n1  From same direction - both going straight - bo...           0   \n2                             One parked--one moving           0   \n3                   From same direction - all others           0   \n4                                  Entering at angle           0   \n\n   CROSSWALKKEY  HITPARKEDCAR  \n0             0             N  \n1             0             N  \n2             0             N  \n3             0             N  \n4             0             N  \n\n[5 rows x 38 columns]"
+                    },
+                    "execution_count": 26,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": "# The code was removed by Watson Studio for sharing."
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 27,
+            "metadata": {},
+            "outputs": [
+                {
+                    "data": {
+                        "text/plain": "SEVERITYCODE        int64\nX                 float64\nY                 float64\nOBJECTID            int64\nINCKEY              int64\nCOLDETKEY           int64\nREPORTNO           object\nSTATUS             object\nADDRTYPE           object\nINTKEY            float64\nLOCATION           object\nEXCEPTRSNCODE      object\nEXCEPTRSNDESC      object\nSEVERITYCODE.1      int64\nSEVERITYDESC       object\nCOLLISIONTYPE      object\nPERSONCOUNT         int64\nPEDCOUNT            int64\nPEDCYLCOUNT         int64\nVEHCOUNT            int64\nINCDATE            object\nINCDTTM            object\nJUNCTIONTYPE       object\nSDOT_COLCODE        int64\nSDOT_COLDESC       object\nINATTENTIONIND     object\nUNDERINFL          object\nWEATHER            object\nROADCOND           object\nLIGHTCOND          object\nPEDROWNOTGRNT      object\nSDOTCOLNUM        float64\nSPEEDING           object\nST_COLCODE         object\nST_COLDESC         object\nSEGLANEKEY          int64\nCROSSWALKKEY        int64\nHITPARKEDCAR       object\ndtype: object"
+                    },
+                    "execution_count": 27,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": "#checking datatype\ndf_data_1.dtypes\n"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 28,
+            "metadata": {
+                "scrolled": true
+            },
+            "outputs": [
+                {
+                    "data": {
+                        "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>SEVERITYCODE</th>\n      <th>X</th>\n      <th>Y</th>\n      <th>OBJECTID</th>\n      <th>INCKEY</th>\n      <th>COLDETKEY</th>\n      <th>INTKEY</th>\n      <th>SEVERITYCODE.1</th>\n      <th>PERSONCOUNT</th>\n      <th>PEDCOUNT</th>\n      <th>PEDCYLCOUNT</th>\n      <th>VEHCOUNT</th>\n      <th>SDOT_COLCODE</th>\n      <th>SDOTCOLNUM</th>\n      <th>SEGLANEKEY</th>\n      <th>CROSSWALKKEY</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>count</th>\n      <td>194673.000000</td>\n      <td>189339.000000</td>\n      <td>189339.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>65070.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>194673.000000</td>\n      <td>1.149360e+05</td>\n      <td>194673.000000</td>\n      <td>1.946730e+05</td>\n    </tr>\n    <tr>\n      <th>mean</th>\n      <td>1.298901</td>\n      <td>-122.330518</td>\n      <td>47.619543</td>\n      <td>108479.364930</td>\n      <td>141091.456350</td>\n      <td>141298.811381</td>\n      <td>37558.450576</td>\n      <td>1.298901</td>\n      <td>2.444427</td>\n      <td>0.037139</td>\n      <td>0.028391</td>\n      <td>1.920780</td>\n      <td>13.867768</td>\n      <td>7.972521e+06</td>\n      <td>269.401114</td>\n      <td>9.782452e+03</td>\n    </tr>\n    <tr>\n      <th>std</th>\n      <td>0.457778</td>\n      <td>0.029976</td>\n      <td>0.056157</td>\n      <td>62649.722558</td>\n      <td>86634.402737</td>\n      <td>86986.542110</td>\n      <td>51745.990273</td>\n      <td>0.457778</td>\n      <td>1.345929</td>\n      <td>0.198150</td>\n      <td>0.167413</td>\n      <td>0.631047</td>\n      <td>6.868755</td>\n      <td>2.553533e+06</td>\n      <td>3315.776055</td>\n      <td>7.226926e+04</td>\n    </tr>\n    <tr>\n      <th>min</th>\n      <td>1.000000</td>\n      <td>-122.419091</td>\n      <td>47.495573</td>\n      <td>1.000000</td>\n      <td>1001.000000</td>\n      <td>1001.000000</td>\n      <td>23807.000000</td>\n      <td>1.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>1.007024e+06</td>\n      <td>0.000000</td>\n      <td>0.000000e+00</td>\n    </tr>\n    <tr>\n      <th>25%</th>\n      <td>1.000000</td>\n      <td>-122.348673</td>\n      <td>47.575956</td>\n      <td>54267.000000</td>\n      <td>70383.000000</td>\n      <td>70383.000000</td>\n      <td>28667.000000</td>\n      <td>1.000000</td>\n      <td>2.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>2.000000</td>\n      <td>11.000000</td>\n      <td>6.040015e+06</td>\n      <td>0.000000</td>\n      <td>0.000000e+00</td>\n    </tr>\n    <tr>\n      <th>50%</th>\n      <td>1.000000</td>\n      <td>-122.330224</td>\n      <td>47.615369</td>\n      <td>106912.000000</td>\n      <td>123363.000000</td>\n      <td>123363.000000</td>\n      <td>29973.000000</td>\n      <td>1.000000</td>\n      <td>2.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>2.000000</td>\n      <td>13.000000</td>\n      <td>8.023022e+06</td>\n      <td>0.000000</td>\n      <td>0.000000e+00</td>\n    </tr>\n    <tr>\n      <th>75%</th>\n      <td>2.000000</td>\n      <td>-122.311937</td>\n      <td>47.663664</td>\n      <td>162272.000000</td>\n      <td>203319.000000</td>\n      <td>203459.000000</td>\n      <td>33973.000000</td>\n      <td>2.000000</td>\n      <td>3.000000</td>\n      <td>0.000000</td>\n      <td>0.000000</td>\n      <td>2.000000</td>\n      <td>14.000000</td>\n      <td>1.015501e+07</td>\n      <td>0.000000</td>\n      <td>0.000000e+00</td>\n    </tr>\n    <tr>\n      <th>max</th>\n      <td>2.000000</td>\n      <td>-122.238949</td>\n      <td>47.734142</td>\n      <td>219547.000000</td>\n      <td>331454.000000</td>\n      <td>332954.000000</td>\n      <td>757580.000000</td>\n      <td>2.000000</td>\n      <td>81.000000</td>\n      <td>6.000000</td>\n      <td>2.000000</td>\n      <td>12.000000</td>\n      <td>69.000000</td>\n      <td>1.307202e+07</td>\n      <td>525241.000000</td>\n      <td>5.239700e+06</td>\n    </tr>\n  </tbody>\n</table>\n</div>",
+                        "text/plain": "        SEVERITYCODE              X              Y       OBJECTID  \\\ncount  194673.000000  189339.000000  189339.000000  194673.000000   \nmean        1.298901    -122.330518      47.619543  108479.364930   \nstd         0.457778       0.029976       0.056157   62649.722558   \nmin         1.000000    -122.419091      47.495573       1.000000   \n25%         1.000000    -122.348673      47.575956   54267.000000   \n50%         1.000000    -122.330224      47.615369  106912.000000   \n75%         2.000000    -122.311937      47.663664  162272.000000   \nmax         2.000000    -122.238949      47.734142  219547.000000   \n\n              INCKEY      COLDETKEY         INTKEY  SEVERITYCODE.1  \\\ncount  194673.000000  194673.000000   65070.000000   194673.000000   \nmean   141091.456350  141298.811381   37558.450576        1.298901   \nstd     86634.402737   86986.542110   51745.990273        0.457778   \nmin      1001.000000    1001.000000   23807.000000        1.000000   \n25%     70383.000000   70383.000000   28667.000000        1.000000   \n50%    123363.000000  123363.000000   29973.000000        1.000000   \n75%    203319.000000  203459.000000   33973.000000        2.000000   \nmax    331454.000000  332954.000000  757580.000000        2.000000   \n\n         PERSONCOUNT       PEDCOUNT    PEDCYLCOUNT       VEHCOUNT  \\\ncount  194673.000000  194673.000000  194673.000000  194673.000000   \nmean        2.444427       0.037139       0.028391       1.920780   \nstd         1.345929       0.198150       0.167413       0.631047   \nmin         0.000000       0.000000       0.000000       0.000000   \n25%         2.000000       0.000000       0.000000       2.000000   \n50%         2.000000       0.000000       0.000000       2.000000   \n75%         3.000000       0.000000       0.000000       2.000000   \nmax        81.000000       6.000000       2.000000      12.000000   \n\n        SDOT_COLCODE    SDOTCOLNUM     SEGLANEKEY  CROSSWALKKEY  \ncount  194673.000000  1.149360e+05  194673.000000  1.946730e+05  \nmean       13.867768  7.972521e+06     269.401114  9.782452e+03  \nstd         6.868755  2.553533e+06    3315.776055  7.226926e+04  \nmin         0.000000  1.007024e+06       0.000000  0.000000e+00  \n25%        11.000000  6.040015e+06       0.000000  0.000000e+00  \n50%        13.000000  8.023022e+06       0.000000  0.000000e+00  \n75%        14.000000  1.015501e+07       0.000000  0.000000e+00  \nmax        69.000000  1.307202e+07  525241.000000  5.239700e+06  "
+                    },
+                    "execution_count": 28,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": "#statistical summry\ndf_data_1.describe()\n"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 30,
+            "metadata": {},
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": "SEVERITYCODE\n1    136485\n2     58188\ndtype: int64\n"
+                }
+            ],
+            "source": "# conocer los qu\u00e9 cantidad tenemos en cada uno de los grupos seg\u00fan su grado de severidad, correspondiendo 1 a da\u00f1os y 2 a lesiones\nprint(df_data_1.groupby('SEVERITYCODE').size())"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 59,
+            "metadata": {
+                "scrolled": true
+            },
+            "outputs": [
+                {
+                    "data": {
+                        "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>SEVERITYCODE</th>\n      <th>ADDRTYPE</th>\n      <th>ROADCOND</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>2</td>\n      <td>Intersection</td>\n      <td>Wet</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Wet</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>3</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>4</th>\n      <td>2</td>\n      <td>Intersection</td>\n      <td>Wet</td>\n    </tr>\n    <tr>\n      <th>5</th>\n      <td>1</td>\n      <td>Intersection</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>6</th>\n      <td>1</td>\n      <td>Intersection</td>\n      <td>Wet</td>\n    </tr>\n    <tr>\n      <th>7</th>\n      <td>2</td>\n      <td>Intersection</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>8</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>9</th>\n      <td>2</td>\n      <td>Intersection</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>10</th>\n      <td>1</td>\n      <td>Alley</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>11</th>\n      <td>1</td>\n      <td>Intersection</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>12</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Wet</td>\n    </tr>\n    <tr>\n      <th>13</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Wet</td>\n    </tr>\n    <tr>\n      <th>14</th>\n      <td>2</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>15</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>NaN</td>\n    </tr>\n    <tr>\n      <th>16</th>\n      <td>2</td>\n      <td>Intersection</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>17</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>18</th>\n      <td>2</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n    <tr>\n      <th>19</th>\n      <td>1</td>\n      <td>Block</td>\n      <td>Dry</td>\n    </tr>\n  </tbody>\n</table>\n</div>",
+                        "text/plain": "    SEVERITYCODE      ADDRTYPE ROADCOND\n0              2  Intersection      Wet\n1              1         Block      Wet\n2              1         Block      Dry\n3              1         Block      Dry\n4              2  Intersection      Wet\n5              1  Intersection      Dry\n6              1  Intersection      Wet\n7              2  Intersection      Dry\n8              1         Block      Dry\n9              2  Intersection      Dry\n10             1         Alley      Dry\n11             1  Intersection      Dry\n12             1         Block      Wet\n13             1         Block      Wet\n14             2         Block      Dry\n15             1         Block      NaN\n16             2  Intersection      Dry\n17             1         Block      Dry\n18             2         Block      Dry\n19             1         Block      Dry"
+                    },
+                    "execution_count": 59,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": "# limpiando los datos para dejar las variables con las que se va a trabajar\ndf_1 = df_data_1.drop(['X', 'Y', 'OBJECTID', 'INCKEY','INTKEY', 'SPEEDING','STATUS', 'WEATHER','LOCATION','UNDERINFL', 'COLLISIONTYPE','REPORTNO','COLDETKEY', 'LIGHTCOND','SEVERITYCODE.1', 'EXCEPTRSNCODE','EXCEPTRSNDESC','SEVERITYCODE.1','SEVERITYDESC','PERSONCOUNT','PEDCOUNT','PEDCYLCOUNT','VEHCOUNT','INCDATE','INCDTTM','JUNCTIONTYPE','SDOT_COLCODE','SDOT_COLDESC','INATTENTIONIND','PEDROWNOTGRNT','SDOTCOLNUM','ST_COLCODE','ST_COLDESC','SEGLANEKEY','CROSSWALKKEY','HITPARKEDCAR'\n], axis=1)\ndf_1.head(20)"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 60,
+            "metadata": {},
+            "outputs": [
+                {
+                    "data": {
+                        "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>ADDRTYPE</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Block</th>\n      <td>126926</td>\n    </tr>\n    <tr>\n      <th>Intersection</th>\n      <td>65070</td>\n    </tr>\n    <tr>\n      <th>Alley</th>\n      <td>751</td>\n    </tr>\n  </tbody>\n</table>\n</div>",
+                        "text/plain": "              ADDRTYPE\nBlock           126926\nIntersection     65070\nAlley              751"
+                    },
+                    "execution_count": 60,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": "df['ADDRTYPE'].value_counts().to_frame()"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 61,
+            "metadata": {},
+            "outputs": [
+                {
+                    "data": {
+                        "text/html": "<div>\n<style scoped>\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n</style>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>ROADCOND</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>Dry</th>\n      <td>124510</td>\n    </tr>\n    <tr>\n      <th>Wet</th>\n      <td>47474</td>\n    </tr>\n    <tr>\n      <th>Unknown</th>\n      <td>15078</td>\n    </tr>\n    <tr>\n      <th>Ice</th>\n      <td>1209</td>\n    </tr>\n    <tr>\n      <th>Snow/Slush</th>\n      <td>1004</td>\n    </tr>\n    <tr>\n      <th>Other</th>\n      <td>132</td>\n    </tr>\n    <tr>\n      <th>Standing Water</th>\n      <td>115</td>\n    </tr>\n    <tr>\n      <th>Sand/Mud/Dirt</th>\n      <td>75</td>\n    </tr>\n    <tr>\n      <th>Oil</th>\n      <td>64</td>\n    </tr>\n  </tbody>\n</table>\n</div>",
+                        "text/plain": "                ROADCOND\nDry               124510\nWet                47474\nUnknown            15078\nIce                 1209\nSnow/Slush          1004\nOther                132\nStanding Water       115\nSand/Mud/Dirt         75\nOil                   64"
+                    },
+                    "execution_count": 61,
+                    "metadata": {},
+                    "output_type": "execute_result"
+                }
+            ],
+            "source": "df['ROADCOND'].value_counts().to_frame()"
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 65,
+            "metadata": {},
+            "outputs": [
+                {
+                    "data": {
+                        "image/png": "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\n",
+                        "text/plain": "<Figure size 432x288 with 2 Axes>"
+                    },
+                    "metadata": {
+                        "needs_background": "light"
+                    },
+                    "output_type": "display_data"
+                }
+            ],
+            "source": "df_gptest = df_1[['SEVERITYCODE','ADDRTYPE','ROADCOND']]\ngrouped_test1 = df_gptest.groupby(['ADDRTYPE','ROADCOND'],as_index=False).mean()\ngrouped_test1\n\ndf_gptest2 = df[['ROADCOND', 'SEVERITYCODE']]\ngrouped_test_ROADCOND = df_gptest2.groupby(['ROADCOND'],as_index=False).mean()\ngrouped_test_ROADCOND\n\ngrouped_pivot = grouped_test1.pivot(index='ADDRTYPE',columns='ROADCOND')\ngrouped_pivot\n# Let's use a heat map to visualize the relationship between Body Style vs Price. Use the grouped results. \nplt.pcolor(grouped_pivot, cmap='RdBu')\nplt.colorbar()\nplt.show()\n"
         }
     ],
     "metadata": {
